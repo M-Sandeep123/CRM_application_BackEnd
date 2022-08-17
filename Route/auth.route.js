@@ -11,4 +11,11 @@ module.exports = (app) => {
      * POST crm/api/project/users
      */
     app.post("/crm/api/project/users",[authMiddleWare.validUserData],authController.signUp);
+
+    /**
+     * Defining the end point for the signIn 
+     * End point ==> POST /crm/api/project/signIn
+     */
+
+    app.post("/crm/api/project/signIn",[authMiddleWare.validEmail],authController.signIn);
 }

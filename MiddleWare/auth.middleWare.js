@@ -13,7 +13,7 @@ const validUserData = async (req, res, next) => {
     const email = req.body.email;
     const regEx = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (!regEx.test(email)) {
-        return res.status(400).send({
+        return res.status(401).send({
             message: "Invalid email-id format!"
         });
     } else {
@@ -40,6 +40,21 @@ const validUserData = async (req, res, next) => {
     next();
 };
 
+/**
+ * Basic email validation
+ */
+const validEmail = (req,res,next)=>{
+    const regEx = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    
+    if(!regEx.test(req.body.email)){
+        return res.status(401).send({
+            message : "Invalid Credentials!"
+        });
+    }
+    next();
+}
+
 module.exports = {
-    validUserData: validUserData
+    validUserData: validUserData,
+    validEmail : validEmail
 }

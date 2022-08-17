@@ -18,16 +18,16 @@ const bodyParser = require("body-parser");
 const app = express();
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended : true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 mongoose.connect(dbConfig.DB_URL);
 const db = mongoose.connection;
 
-db.on("error",()=>{
+db.on("error", () => {
     console.log("DataBase is not connected");
 });
 
-db.once("open",()=>{
+db.once("open", () => {
     console.log("DataBase is connected successfully");
     /**
      * To check api working I need to clear all the data already present the database
@@ -35,7 +35,7 @@ db.once("open",()=>{
     init();
 });
 
-async function init(){
+async function init() {
     /**
      * Deleting the data from the database
      */
@@ -45,13 +45,13 @@ async function init(){
      * Fro the backend processing we need a adminstrator(ADMIN)
      */
     const admin = await User.create({
-        firstName : "Mudigonda",
-        lastName : "sandeep",
-        email : "mudigondasandeep01@gmail.com",
-        password : bcrypt.hashSync("password",8),
-        role : "ADMIN",
-        contactNumber : 8688692077,
-        userName : "mudigondasandeep01@gmail.com"
+        firstName: "Mudigonda",
+        lastName: "sandeep",
+        email: "admin@upgrad.com",
+        password: bcrypt.hashSync("password", 8),
+        role: "ADMIN",
+        contactNumber: 8688692077,
+        userName: "admin@upgrad.com"
     });
     console.log(admin);
 }
@@ -61,6 +61,6 @@ async function init(){
  */
 require("./Route/auth.route")(app);
 
-app.listen(serverConfig.PORT,()=>{
+app.listen(serverConfig.PORT, () => {
     console.log("Server is started at PORT : ", serverConfig.PORT);
-})
+});

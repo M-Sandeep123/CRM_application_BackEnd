@@ -29,7 +29,7 @@ exports.signUp = async (req, res) => {
             contactNumber: req.body.contactNumber,
             email: req.body.email,
             password: bcrypt.hashSync(req.body.password, 8),
-            userName : req.body.email
+            userName: req.body.email
         };
 
         /**
@@ -63,6 +63,68 @@ exports.signUp = async (req, res) => {
         console.log("Error while creating the user : ", err.message);
         res.status(500).send({
             message: "Internal server error while creating the user"
+        });
+    }
+}
+
+/**
+ * This function if the SignIn/login 
+ */
+
+exports.signIn = async (req, res) => {
+    try {
+
+        /**
+         * Read the data Credentials from the request body
+         */
+        const userName = req.body.email;
+        const password = req.body.password;
+
+        /**
+         * find the user with the data in database
+         */
+        const user = await User.findOne({ userName: userName });
+        //need basic email validation
+        if (!user) {
+            return res.status(401).send({
+                message: "This email has not been registered!"
+            });
+        }
+
+        /**
+         * Now Ensure that the password from the request body is valid or not
+         * ==> we get the password from the user is plain text(String), password in the database is encrypt form
+         */
+        const validPassword = bcrypt.compareSync(password, user.password);
+        if (!validPassword) {
+            return res.status(401).send({
+                message: "Invalid Credentials!"
+            });
+        }
+
+        /**
+         * If both data is valid we generate the acces token (JWT based token)
+         */
+        const token = jwt.sign({
+            userName: user.userName
+        }, authConfig.secert, {
+            expiresIn: 600
+        });
+
+        /**
+         * Send the response back to user
+         */
+        res.status(200).send({
+            email: user.email,
+            name: user.firstName + user.lastName,
+            isAuthenticated: token
+        });
+
+
+    } catch (err) {
+        console.log("Error while User login to the accout", err.message);
+        res.status(500).send({
+            message: "Internal server error while login"
         });
     }
 }
