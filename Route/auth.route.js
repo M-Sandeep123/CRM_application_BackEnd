@@ -10,7 +10,7 @@ module.exports = (app) => {
      * Defining the Route for the SignUp user
      * POST crm/api/project/users
      */
-    app.post("/crm/api/project/users",[authMiddleWare.validUserData],authController.signUp);
+    app.post("/crm/api/project/users",[authMiddleWare.validEmail,authMiddleWare.validNumber],authController.signUp);
 
     /**
      * Defining the end point for the signIn 

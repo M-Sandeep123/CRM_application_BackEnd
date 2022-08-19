@@ -33,6 +33,16 @@ exports.signUp = async (req, res) => {
         };
 
         /**
+         * Check if email provided by user is already exist in dataBase/not
+         */
+         const Umail = await User.findOne({email: userObj.email});
+         if (Umail) {
+             return res.status(403).send({
+                 message: "Try any other email, this email is already registered!"
+             });
+         }
+
+        /**
          * Set the user role by default it is USER
          */
         if (!req.body.role || userObj.req.body.role === "USER") {
@@ -106,7 +116,7 @@ exports.signIn = async (req, res) => {
          * If both data is valid we generate the acces token (JWT based token)
          */
         const token = jwt.sign({
-            userName: user.userName
+            user_id: user._id
         }, authConfig.secert, {
             expiresIn: 600
         });

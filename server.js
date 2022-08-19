@@ -60,6 +60,7 @@ async function init() {
  * Here we plugIn the server and application route
  */
 require("./Route/auth.route")(app);
+require("./Route/address.route")(app);
 
 app.listen(serverConfig.PORT, () => {
     console.log("Server is started at PORT : ", serverConfig.PORT);
