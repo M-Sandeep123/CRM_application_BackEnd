@@ -8,14 +8,14 @@ const authMiddleWare = require("../MiddleWare/auth.middleWare");
 module.exports = (app) => {
     /**
      * Defining the Route for the SignUp user
-     * POST crm/api/project/users
+     * POST /users
      */
-    app.post("/crm/api/project/users",[authMiddleWare.validEmail,authMiddleWare.validNumber],authController.signUp);
+    app.post("/users",[authMiddleWare.validEmail,authMiddleWare.validNumber],authController.signUp);
 
     /**
      * Defining the end point for the signIn 
-     * End point ==> POST /crm/api/project/signIn
+     * End point ==> POST /signIn
      */
 
-    app.post("/crm/api/project/signIn",[authMiddleWare.validEmail],authController.signIn);
+    app.post("/signIn",[authMiddleWare.validEmail],authController.signIn);
 }

@@ -2,6 +2,7 @@
  * This file contains the User varification for accessing the APIs
  */
 
+const e = require("express");
 const jwt = require("jsonwebtoken");
 const config = require("../Configs/auth.config");
 const User = require("../Model/user.model");
@@ -53,7 +54,22 @@ const verifyToken = (req,res,next)=>{
 }
 
 
+/**
+ * MiddleWare to validate the user is Admin or not
+ */
+const isAdmin = async (req,res,next)=>{
+    const user = await User.findOne({_id : req.user});
+    if(user && user.role == "ADMIN"){
+        return next();
+    }else{
+        return res.status(403).send({
+            message : "You are not authorised to access this endpoint!"
+        });
+    }
+}
+
 module.exports = {
     verifyToken : verifyToken,
-    validZipCode : validZipCode
+    validZipCode : validZipCode,
+    isAdmin : isAdmin
 }

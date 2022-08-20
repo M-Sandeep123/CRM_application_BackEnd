@@ -11,6 +11,6 @@ module.exports = (app)=>{
      * The API call for creating address api
      * The end point => '/addresses'
      */
-    app.post("/crm/api/project/addresses",[tokenValidation.verifyToken,tokenValidation.validZipCode,userValidation.validNumber],addressController.address);
+    app.post("/addresses",[tokenValidation.verifyToken,tokenValidation.validZipCode,userValidation.validNumber],addressController.address);
     
 }
