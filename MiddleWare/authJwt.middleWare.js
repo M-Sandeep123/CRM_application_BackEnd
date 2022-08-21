@@ -68,8 +68,27 @@ const isAdmin = async (req,res,next)=>{
     }
 }
 
+/**
+ * Validation of only owner should place the order
+ */
+const isOwner = async (req,res,next)=>{
+    const user = await User.findById(req.user);
+    if(!user){
+        return res.status(401).send({
+            message : `No Product found for ID - <${req.User}>!`
+        });
+    }else if(user.role === "ADMIN"){
+        return res.status(403).send({
+            message : "You are not authorised to access this endpoint."
+        });
+    }else{
+        next();
+    }
+}
+
 module.exports = {
     verifyToken : verifyToken,
     validZipCode : validZipCode,
-    isAdmin : isAdmin
+    isAdmin : isAdmin,
+    isOwner : isOwner
 }

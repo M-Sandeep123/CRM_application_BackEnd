@@ -50,7 +50,6 @@ exports.address = async (req,res)=>{
             user : userId
         });
         
-
     }catch(err){
         console.log("Error While creating the address : ", err.message);
         res.status(500).send({

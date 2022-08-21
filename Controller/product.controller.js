@@ -67,7 +67,9 @@ exports.productsDetails = async (req, res) => {
         /**
          * Fetching the data from the database
          */
-        const productData = await product.find({ category: cat, name: name });
+        const sortAc ={};
+        sortAc[sortBy] = direction;
+        const productData = await product.find({ category: cat, name: name }).sort(sortAc);
         /**
          * Send the response to the user
          */
