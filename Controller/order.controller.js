@@ -38,13 +38,13 @@ exports.orderPlace = async (req, res) => {
 
         const availableItems = product.availableItems;
 
-        if (availableItems == 0 || product.availableItems-orderObj.quantity <= 0) {
+        if (availableItems == 0 || product.availableItems - orderObj.quantity <= 0) {
             return res.status(401).send({
                 message: `Product with ID - <${orderObj.productId}> is currently out of stock!`
             });
         } else {
             console.log(product.availableItems);
-            product.availableItems = (product.availableItems)-orderObj.quantity;
+            product.availableItems = (product.availableItems) - orderObj.quantity;
             console.log(product.availableItems);
             await product.save();
         }
