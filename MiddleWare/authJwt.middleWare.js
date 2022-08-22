@@ -13,7 +13,7 @@ const verifyToken = (req,res,next)=>{
      */
     const token = req.headers['x-access-token'];
     if(!token){
-        return res.status(403).send({
+        return res.status(401).send({
             message : "Please login first to access this endpoint!"
         });
     }
@@ -23,7 +23,7 @@ const verifyToken = (req,res,next)=>{
      */
      jwt.verify(token,config.secert,(err,decoded)=>{
         if(err){
-            return res.status(401).send({
+            return res.status(400).send({
                 message : "Invaid token"
             });
         }
@@ -45,7 +45,7 @@ const verifyToken = (req,res,next)=>{
  const validZipCode = (req,res,next)=>{
     const regEgx = /^([0-9]){6}$/;
     if (!regEgx.test(req.body.zipCode)) {
-        return res.status(401).send({
+        return res.status(400).send({
             message: "Invalid zipCode!"
         });
     }
@@ -71,17 +71,13 @@ const isAdmin = async (req,res,next)=>{
 /**
  * Validation of only owner should place the order
  */
-const isOwner = async (req,res,next)=>{
+const isOwner = async (req, res, next) => {
     const user = await User.findById(req.user);
-    if(!user){
-        return res.status(401).send({
-            message : `No Product found for ID - <${req.User}>!`
-        });
-    }else if(user.role === "ADMIN"){
+    if (user.role === "ADMIN") {
         return res.status(403).send({
-            message : "You are not authorised to access this endpoint."
+            message: "You are not authorised to access this endpoint."
         });
-    }else{
+    } else {
         next();
     }
 }

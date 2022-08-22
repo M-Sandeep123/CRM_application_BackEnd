@@ -5,6 +5,7 @@
 const Order = require("../Model/order.model");
 const Product = require("../Model/product.model");
 const Address = require("../Model/addresses.model");
+const User = require("../Model/user.model");
 
 exports.orderPlace = async (req, res) => {
     try {
@@ -17,14 +18,14 @@ exports.orderPlace = async (req, res) => {
         }
         const product = await Product.findById(orderObj.productId);
         if (!product) {
-            return res.status(401).send({
+            return res.status(404).send({
                 message: `No Product found for ID - <${req.body.productId}>!`
             });
         }
         orderObj.amount = product.price;
         const address = await Address.findById(orderObj.addressId);
         if (!address) {
-            return res.status(401).send({
+            return res.status(404).send({
                 message: `No Address found for ID - <${req.body.addressId}>!`
             });
         }
@@ -43,13 +44,13 @@ exports.orderPlace = async (req, res) => {
                 message: `Product with ID - <${orderObj.productId}> is currently out of stock!`
             });
         } else {
-            console.log(product.availableItems);
             product.availableItems = (product.availableItems) - orderObj.quantity;
-            console.log(product.availableItems);
             await product.save();
         }
-
+        const user = await User.findById(req.user);
         const order = await Order.create(orderObj);
+        user.userOrders.push(order._id);
+        await user.save();
         /**
          * send response to the user
          */

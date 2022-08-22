@@ -21,6 +21,10 @@ const prodectSchema = new mongoose.Schema({
         type : String,
         required : true
     },
+    manufacturer : {
+        type : String,
+        required : true
+    },
     availableItems : {
         type : String,
         required : true

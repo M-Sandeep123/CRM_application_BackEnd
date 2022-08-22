@@ -35,6 +35,8 @@ exports.address = async (req,res)=>{
         
         const userId = await User.findOne({_id : req.user});
         const add = await address.create(addObj);
+        userId.userAddresses.push(add._id);
+        await userId.save();
 
         res.status(200).send({
             _id: add._id,

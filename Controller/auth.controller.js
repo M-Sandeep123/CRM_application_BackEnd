@@ -96,7 +96,7 @@ exports.signIn = async (req, res) => {
         const user = await User.findOne({ userName: userName });
         //need basic email validation
         if (!user) {
-            return res.status(401).send({
+            return res.status(404).send({
                 message: "This email has not been registered!"
             });
         }
@@ -107,7 +107,7 @@ exports.signIn = async (req, res) => {
          */
         const validPassword = bcrypt.compareSync(password, user.password);
         if (!validPassword) {
-            return res.status(401).send({
+            return res.status(400).send({
                 message: "Invalid Credentials!"
             });
         }

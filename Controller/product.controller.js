@@ -60,20 +60,44 @@ exports.productsDetails = async (req, res) => {
         /**
          * Read the required data from the query parameters of the URL
          */
+
         const cat = (req.query.category != undefined) ? req.query.category : "";
         const direction = (req.query.direction != undefined) ? ((req.query.direction == "ASC") ? 1 : -1) : -1;
         const name = (req.query.name != undefined) ? req.query.name : "";
         const sortBy = (req.query.sortBy != undefined) ? req.query.sortBy : "_id";
+
         /**
          * Fetching the data from the database
          */
+
         const sortAc ={};
         sortAc[sortBy] = direction;
-        const productData = await product.find({ category: cat, name: name }).sort(sortAc);
+
         /**
-         * Send the response to the user
+         * Sending response according to the user requirement 
+         * 1 : Only user wants only perticular product category data
+         * 2 : only user wants only perticular product data by Name of the product and
+         * 3 : User does not provide any specification we send all products data to the user
          */
-        res.status(200).send(productData);
+
+        if (cat && !name) {
+            const productData = await product.find({ category: cat }).sort(sortAc);
+            return res.status(200).send(productData);
+        } else if (!cat && name) {
+            const productData = await product.find({ name: name }).sort(sortAc);
+            return res.status(200).send(productData);
+        } else if (!cat && !name) {
+            const productData = await product.find().sort(sortAc);
+            return res.status(200).send(productData);
+        } else {
+            const productData = await product.find({ category: cat, name: name }).sort(sortAc);
+
+            /**
+             * Send the response to the user
+             */
+
+            res.status(200).send(productData);
+        }
 
     } catch (err) {
         console.log("Error while fetching the product details : ", err.message);
@@ -95,7 +119,7 @@ exports.productCategory = async (req, res) => {
 
         const products = await product.find();
         if (!products) {
-            return res.status(401).send({
+            return res.status(404).send({
                 message: "No product available on this category!"
             });
         }
@@ -135,7 +159,7 @@ exports.productId = async (req, res) => {
         const productId = req.params.id;
         const productData = await product.findById(productId);
         if (!productData) {
-            return res.status(401).send({
+            return res.status(404).send({
                 message: `No Product found for ID - ${productId}!`
             });
         }
@@ -168,7 +192,7 @@ exports.updateProduct = async (req, res) => {
         const productData = await product.findById(productId);
 
         if (!productData) {
-            return res.status(401).send({
+            return res.status(404).send({
                 message: `No Product found for ID - ${productId}!`
             });
         }
@@ -177,7 +201,7 @@ exports.updateProduct = async (req, res) => {
          * Read the updated data from the request body
          */
         productData.name = req.body.name ? req.body.name : productData.name;
-        productData.availableItems = req.body.name ? req.body.availableItems : productData.availableItems;
+        productData.availableItems = req.body.availableItems ? req.body.availableItems : productData.availableItems;
         productData.price = req.body.price ? req.body.price : productData.price;
         productData.category = req.body.category ? req.body.category : productData.category;
         productData.description = req.body.description ? req.body.description : productData.description;
@@ -212,7 +236,7 @@ exports.deleteProduct = async (req, res) => {
 
         const productData = await product.findById(productId);
         if (!productData) {
-            return res.status(401).send({
+            return res.status(404).send({
                 message: `No Product found for ID - ${productId}!`
             });
         }

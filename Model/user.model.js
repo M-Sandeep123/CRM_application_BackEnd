@@ -34,6 +34,14 @@ const userSchema = new mongoose.Schema({
     userName : {
         type : String
     },
+    userAddresses : {
+        type : [mongoose.SchemaTypes.ObjectId],
+        ref : "Address"
+    },
+    userOrders : {
+        type : [mongoose.SchemaTypes.ObjectId],
+        ref : "Order"
+    },
     createAt: {
         type: Date,
         default: () => {
